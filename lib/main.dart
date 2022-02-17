@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'ShopButtomNavigator.dart';
+import 'package:http/http.dart';
+import 'dart:developer';
+import 'package:flutter/foundation.dart';
+
 
 void main() => runApp(store());
 
@@ -10,11 +16,19 @@ class store extends StatefulWidget {
 }
 
 class _storeState extends State<store> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchItems();
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        backgroundColor: Colors.blue[50],
         appBar: AppBar(
             elevation: 30,
             title: Text(
@@ -42,8 +56,9 @@ class _storeState extends State<store> {
           child: Icon(Icons.add),
           onPressed: () {},
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(15.0),
+        body:
+
+        Padding(padding: const EdgeInsets.all(15.0),
           child: GridView.count(
             mainAxisSpacing: 15,
             crossAxisSpacing: 10,
@@ -57,42 +72,60 @@ class _storeState extends State<store> {
       ),
     );
   }
+
+  void fetchItems() async{
+    //var url='http://www.welearnacademy.ir/flutter/products_list.json';
+    var url='https://www.simyapp.ir/products.json';
+    Response response=await get(Uri.parse(url));
+    print(response.statusCode);
+    print(utf8.decode(response.bodyBytes));
+    var test=utf8.decode(response.bodyBytes);
+    // String jsonsDataString = response.body.toString(); // toString of Response's body is assigned to jsonDataString
+    // var _data = jsonDecode(jsonsDataString);
+    //print(_data.toString());
+    debugPrint('movieTitle: $test');
+  }
 }
 
 Card generateItem() {
   return Card(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: 90,
-          height: 90,
-          child:
-          Image.network("https://malleys.com/wp-content/uploads/2017/02/bigstock-Chocolate-Covered-Strawberries-165270170.jpg"),
-          ),
-        Container(
-          margin: EdgeInsets.only(top: 15),
-          child: Text("قیمت",
-          style: TextStyle(
-            fontFamily: "Vazir",
-            color: Colors.blue[600],
-            fontSize: 14.0,
-
-          ),
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.only(top: 15),
-          child: Text("عنوان",
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(15.0)
+    ),
+    child: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 90,
+            height: 90,
+            child:
+            Image.network('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+            ),
+          Container(
+            margin: EdgeInsets.only(top: 15),
+            child: Text("قیمت",
             style: TextStyle(
               fontFamily: "Vazir",
               color: Colors.blue[600],
               fontSize: 14.0,
-              fontWeight: FontWeight.bold,
+
+            ),
             ),
           ),
-        )
-      ],
+          Container(
+            margin: EdgeInsets.only(top: 15),
+            child: Text("عنوان",
+              style: TextStyle(
+                fontFamily: "Vazir",
+                color: Colors.blue[600],
+                fontSize: 14.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          )
+        ],
+      ),
     ),
   );
 }
